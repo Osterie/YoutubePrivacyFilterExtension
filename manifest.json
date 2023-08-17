@@ -1,0 +1,17 @@
+{
+    "manifest_version": 3,
+    "name": "Youtube Privacy Filter",
+    "description": "Hides youtube thumbnails and titles for increased privacy",
+    "version": "1",
+
+    "background": { "service_worker": "background.js" },
+    "content_scripts": [
+        {
+            "js": ["content.js"],
+            "css": [ "style.css" ],
+            "matches": ["https://www.youtube.com/*", "https://www.youtube.com"]
+        }
+    ]   
+}
+
+  
