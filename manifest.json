@@ -4,11 +4,30 @@
     "description": "Hides youtube thumbnails and titles for increased privacy",
     "version": "1",
 
+    "commands": {
+        "hide_images": {
+          "suggested_key": {
+            "default": "Ctrl+Shift+K"
+          },
+          "description": "Hotkey for hiding images"
+        },
+
+        "show_images": {
+          "suggested_key": {
+            "default": "Ctrl+Shift+L"
+          },
+          "description": "Hotkey for showing images"
+        }
+      },
+          
+      "permissions": ["activeTab"],
+
     "background": { "service_worker": "background.js" },
     "content_scripts": [
         {
             "js": ["content.js"],
-            "css": [ "style.css" ]
+            "css": [ "style.css" ],
+            "matches": ["<all_urls>"]
         }
     ]   
 }

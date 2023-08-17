@@ -1,61 +1,48 @@
-chrome.runtime.onMessage.addListener(function(message) {
-    if (message.sender === "init"){ 
-        main()
+let intervalId
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+    if (message.message === "hide_images"){ 
+        hide_images()
+        intervalId = setInterval(hide_images, 1000);
+    }
+
+    else if (message.message === "show_images"){ 
+        clearInterval(intervalId)
+        show_images()
     }
 });
 
+
+
+
 async function main(){
 
-    const product_codes_elements = await wait_for_elements('.product__code');
-    const product_codes = Array.from(product_codes_elements).map(element => element.textContent);
-    const product_codes_stringified = product_codes.toString();
+    // hide_images()
+    let intervalId = setInterval(hide_images, 1000);
 
-    const api_endpoint = "https://osterie.azurewebsites.net/api/Beverages"
-    const beverage_all_info_string = await postData(api_endpoint, product_codes_stringified).then((response) => {
-        return response; 
+
+
+
+// clearInterval(intervalId);
+
+}  
+
+function hide_images(){
+    const images = document.querySelectorAll('img');
+    images.forEach(image => {
+        // image.style.visibility = 'visible';  // Set the image source to an empty string to prevent loading
+        image.style.visibility = 'hidden';  // Set the image source to an empty string to prevent loading
+    })
+}
+
+function show_images(){
+    const images = document.querySelectorAll('img');
+    images.forEach(image => {
+        // image.style.visibility = 'visible';  // Set the image source to an empty string to prevent loading
+        image.style.visibility = 'visible';  // Set the image source to an empty string to prevent loading
     })
 
-    let div_target_areas = await wait_for_elements(".info-container")
-
-    const beverages_all_info_matrix = store_csv(beverage_all_info_string, ";", "\n")
-
-    const target_values = find_values_matrix(beverages_all_info_matrix, product_codes)
-    const target_alcohol_value_ratios = target_values[1]
-    const target_alcohol_percentages = target_values[2]
-
-    const value_ratio_divs = []
-    const alcohol_percentage_divs = []
-
-    for (let i = 0; i < target_alcohol_percentages.length; i++) {
-        let value_ratio_text 
-        let alcohol_percentage_text
-        let percentage = scale_number((target_alcohol_value_ratios[i]), 7.66, 20)
-        
-        let background_color;
-        if (percentage < 25){
-             background_color = "rgba(255, 255, 255, 1)"
-        }
-        else{
-             background_color = "rgba(0, 0, 0, 1)"
-        }
-
-        let value_ratio_style = [{ property: 'color', value: percentage_to_color( (target_alcohol_value_ratios[i]), 7.66, 20) }, { property: 'background-color', value: background_color }];
-
-        if (target_alcohol_value_ratios[i] && target_alcohol_percentages[i]) {
-            value_ratio_text = "Alkoholøkonomisk vurdering: " + target_alcohol_value_ratios[i] 
-            alcohol_percentage_text = "Alkoholprosent: " + target_alcohol_percentages[i];
-        }
-        else{
-            value_ratio_text = "Alkoholøkonomisk vurdering: unknown";
-            alcohol_percentage_text = "Alkoholprosent: unknown";
-        }
-
-        value_ratio_divs.push(create_div(value_ratio_text, "value_ratios", value_ratio_style))
-        alcohol_percentage_divs.push(create_div(alcohol_percentage_text, "alcohol_percentages"))
-    }
-
-    manipulate_DOM([value_ratio_divs, alcohol_percentage_divs], div_target_areas, product_codes)
-}  
+}
 
 // searches one of the arrays for values matching given array,
 // finds all matching and returns the arrays in the same 2d array position
