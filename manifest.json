@@ -5,14 +5,14 @@
     "version": "1",
 
     "commands": {
-        "hide_images": {
+        "hide_youtube_videos": {
           "suggested_key": {
             "default": "Ctrl+Shift+K"
           },
           "description": "Hotkey for hiding images"
         },
 
-        "show_images": {
+        "show_youtube_videos": {
           "suggested_key": {
             "default": "Ctrl+Shift+L"
           },
@@ -20,7 +20,7 @@
         }
       },
           
-      "permissions": ["activeTab"],
+      "permissions": ["activeTab", "tabs"],
 
     "background": { "service_worker": "background.js" },
     "content_scripts": [
